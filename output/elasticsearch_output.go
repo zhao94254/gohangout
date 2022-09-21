@@ -55,11 +55,12 @@ func (action *Action) Encode() []byte {
 	index, _ := f().Encode(action.index)
 	meta = append(meta, index...)
 
-	if action.es_version <= defaultEsVersion {
-		meta = append(meta, `,"_type":`...)
-		index_type, _ := f().Encode(action.index_type)
-		meta = append(meta, index_type...)
-	}
+	// es8 需要注释掉
+	//if action.es_version <= defaultEsVersion {
+	//	meta = append(meta, `,"_type":`...)
+	//	index_type, _ := f().Encode(action.index_type)
+	//	meta = append(meta, index_type...)
+	//}
 
 	if action.id != "" {
 		meta = append(meta, `,"_id":`...)
