@@ -60,9 +60,11 @@ func (plugin *GeoIPFilter) Filter(event map[string]interface{}) (map[string]inte
 	if !ok {
 		return event, true
 	}
+	glog.V(5).Infof("GeoIP Filter_ip %s %+v %s", ipname, plugin.config, ip)
 	ipAddr := net.ParseIP(ip)
 	isp, err := GetGeoIPLib(plugin.database).ISP(ipAddr)
 	if err != nil {
+		glog.V(5).Infof("GeoIP Filter_ip err %s %s %+v %s", err ipname, plugin.config, ip)
 		return event, true
 	}
 
