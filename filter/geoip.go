@@ -6,6 +6,7 @@ import (
 
 	"sync"
 
+	"github.com/golang/glog"
 	"github.com/oschwald/geoip2-golang"
 
 	"github.com/childe/gohangout/topology"
@@ -50,7 +51,12 @@ func newGeoIPFilter(config map[interface{}]interface{}) topology.Filter {
 }
 
 func (plugin *GeoIPFilter) Filter(event map[string]interface{}) (map[string]interface{}, bool) {
-	ip, ok := plugin.config[plugin.target].(string)
+	ipname, ok := plugin.config[plugin.target].(string)
+	glog.V(5).Infof("GeoIP Filter %s %+v %+v", ipname, plugin.config, event)
+	if !ok {
+		return event, true
+	}
+	ip, ok := event[ipname].(string)
 	if !ok {
 		return event, true
 	}
