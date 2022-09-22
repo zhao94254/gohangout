@@ -152,6 +152,7 @@ func (p *KafkaInput) ReadOneEvent() map[string]interface{} {
 		kafkaMeta["partition"] = message.PartitionID
 		kafkaMeta["offset"] = message.Message.Offset
 		event["@metadata"] = map[string]interface{}{"kafka": kafkaMeta}
+		event["out_index"] = p.config["out_index"]
 	}
 	return event
 }

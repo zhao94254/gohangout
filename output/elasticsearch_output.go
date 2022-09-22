@@ -543,6 +543,12 @@ func (p *ElasticsearchOutput) Emit(event map[string]interface{}) {
 			routing = t.(string)
 		}
 	}
+	lIndex := len(index)
+	if  oIndex, ok := event["out_index"]; ok && lIndex > 11 {
+		newIndex := fmt.Sprintf("%s-%s",oIndex, index[lIndex-10:])
+		glog.V(5).Infof("replace index: old %s new %s", index, newIndex)
+		index = newIndex
+	}
 
 	if p.source_field == nil && p.bytes_source_field == nil {
 		p.bulkProcessor.add(&Action{op, index, index_type, id, routing, event, nil, es_version})
