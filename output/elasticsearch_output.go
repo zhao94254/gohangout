@@ -550,7 +550,6 @@ func (p *ElasticsearchOutput) Emit(event map[string]interface{}) {
 		if kdata, ok := metadata["kafka"].(map[string]interface{}); ok {
 			if  oIndex, ok := kdata["out_index"]; ok && lIndex > 11 {
 				newIndex := fmt.Sprintf("%s-%s",oIndex, index[lIndex-10:])
-				glog.V(5).Infof("replace index: old %s new %s", index, newIndex)
 				index = newIndex
 			}
 		}
