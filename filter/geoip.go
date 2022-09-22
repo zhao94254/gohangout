@@ -13,12 +13,14 @@ import (
 )
 
 var Geoip2Reader *geoip2.Reader
+var Geoip2Reader1 *geoip2.Reader
 var once sync.Once
 
 type GeoIPFilter struct {
 	config   map[interface{}]interface{}
 	target   string
 	database string
+	ispDatabase string
 }
 
 func GetGeoIPLib(database string) *geoip2.Reader {
@@ -33,6 +35,18 @@ func GetGeoIPLib(database string) *geoip2.Reader {
 	return Geoip2Reader
 }
 
+func GetGeoIPLibIsp(database string) *geoip2.Reader {
+	var err error
+
+	once.Do(func() {
+		Geoip2Reader1, err = geoip2.Open(database)
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+	})
+	return Geoip2Reader1
+}
+
 func init() {
 	Register("GeoIP", newGeoIPFilter)
 }
@@ -45,6 +59,9 @@ func newGeoIPFilter(config map[interface{}]interface{}) topology.Filter {
 	}
 	if database, ok := config["database"]; ok {
 		plugin.database = database.(string)
+	}
+	if ispDatabase, ok := config["isp_database"]; ok {
+		plugin.ispDatabase = ispDatabase.(string)
 	}
 
 	return plugin
@@ -62,7 +79,7 @@ func (plugin *GeoIPFilter) Filter(event map[string]interface{}) (map[string]inte
 	}
 	glog.V(5).Infof("GeoIP Filter_ip %s %+v %s", ipname, plugin.config, ip)
 	ipAddr := net.ParseIP(ip)
-	isp, err := GetGeoIPLib(plugin.database).ISP(ipAddr)
+	isp, err := GetGeoIPLibIsp(plugin.ispDatabase).ISP(ipAddr)
 	if err != nil {
 		glog.V(5).Infof("GeoIP Filter_ip err %s %s %+v %s", err, ipname, plugin.config, ip)
 		return event, true
