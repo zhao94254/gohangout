@@ -96,23 +96,25 @@ func (plugin *GeoIPFilter) Filter(event map[string]interface{}) (map[string]inte
 		return event, true
 	}
 
-	event["country_name"] = record.Country.Names["en"]
-	event["country_code"] = record.Country.IsoCode
+	geoipMap := make(map[string]interface{})
 	if len(record.Subdivisions) > 0 {
-		event["region_name"] = record.Subdivisions[0].Names["en"]
+		geoipMap["region_name"] = record.Subdivisions[0].Names["en"]
 	} else {
-		event["region_name"] = ""
+		geoipMap["region_name"] = ""
 	}
-	event["city_name"] = record.City.Names["en"]
+	geoipMap["city_name"] = record.City.Names["en"]
 
 
 
-	event["location"] = map[string]interface{}{
+	geoipMap["location"] = map[string]interface{}{
 		"lat": record.Location.Latitude,
 		"lon": record.Location.Longitude,
 	}
-	event["isp"] = isp.ISP
-	event["organization"] = isp.Organization
+	geoipMap["isp"] = isp.ISP
+	geoipMap["organization"] = isp.Organization
+	geoipMap["country_name"] = record.Country.Names["en"]
+	geoipMap["country_code"] = record.Country.IsoCode
+	event["geoip"] = geoipMap
 
 
 
