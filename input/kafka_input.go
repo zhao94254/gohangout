@@ -3,11 +3,12 @@ package input
 import (
 	"time"
 
-	"github.com/childe/gohangout/codec"
-	"github.com/childe/gohangout/topology"
 	"github.com/childe/healer"
 	"github.com/golang/glog"
 	jsoniter "github.com/json-iterator/go"
+
+	"github.com/childe/gohangout/codec"
+	"github.com/childe/gohangout/topology"
 )
 
 type KafkaInput struct {
@@ -154,6 +155,7 @@ func (p *KafkaInput) ReadOneEvent() map[string]interface{} {
 		event["@metadata"] = map[string]interface{}{"kafka": kafkaMeta}
 		event["out_index"] = p.config["out_index"]
 	}
+	glog.V(5).Infof("ReadOneEvent kafka input event %+v %+v", event, p.config)
 	return event
 }
 

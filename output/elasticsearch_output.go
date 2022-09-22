@@ -543,6 +543,7 @@ func (p *ElasticsearchOutput) Emit(event map[string]interface{}) {
 			routing = t.(string)
 		}
 	}
+	glog.V(20).Infof("output event %+v %s", event, index)
 	lIndex := len(index)
 	if  oIndex, ok := event["out_index"]; ok && lIndex > 11 {
 		newIndex := fmt.Sprintf("%s-%s",oIndex, index[lIndex-10:])
