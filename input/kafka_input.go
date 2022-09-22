@@ -155,7 +155,7 @@ func (p *KafkaInput) ReadOneEvent() map[string]interface{} {
 		kafkaMeta["out_index"] = p.config["out_index"]
 		event["@metadata"] = map[string]interface{}{"kafka": kafkaMeta}
 	}
-	glog.V(5).Infof("ReadOneEvent kafka input event %+v %+v", event, p.config)
+
 	return event
 }
 
